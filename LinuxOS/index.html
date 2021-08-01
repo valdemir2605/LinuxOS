@@ -147,11 +147,11 @@ extras, que as vezes é incompatível dependendo da distribuição.
           </div>
           <div class="col-lg-8 pt-4 pt-lg-0 content">
             <h5>Criando o diretório principal</h5>
-            <p>mkdir Deepin20 && cd Deepin20</p>
+            <p>mkdir LinusOS && cd LinusOS</p>
             <p><div><strong>Criando os subdiretórios</strong>
             </div>mkdir customizando<br>mkdir customizado<br>mkdir montagem<br>mkdir squashfs</p>
-            <p><div><strong>Copiar a imagem baixada para o diretório Deepin20</strong>
-            </div>cp /home/valdemir/Deepin-20.2.2-desktop-community-x86_64.iso /home/valdemir/Deepin20<br>
+            <p><div><strong>Copiar a imagem baixada para o diretório LinusOS</strong>
+            </div>cp /home/valdemir/deepin-desktop-community-20.2.2-amd64.iso /home/valdemir/LinusOS<br>
             <em>Onde o nome de usuário deve ser substituido pelo seu nome de usuário</em></p>
             <div class="row">                       
           </div>
@@ -193,7 +193,7 @@ extras, que as vezes é incompatível dependendo da distribuição.
               Esta etapa consiste em montar a ISO, extrair para o respectivo diretório, e copiar para o diretório de customização
               Depois que já estiver customizando não é nescessário passar toda vez por esta etapa, só se for a primeira vez, a não ser que você chegou ao final da customização e removeu todas as pastas, você pode customizar quanto tempo forem nescessário</p>
               <p><div><strong>Montar extrair copiar para os respectivos subdiretório de trabalho</strong>
-              </div>sudo mount -o loop Deepin-20.2.2-desktop-community-x86_64.iso montagem<br>rsync --exclude=/live/filessystem.squashfs -a montagem/ customizado
+              </div>sudo mount -o loop deepin-desktop-community-20.2.2-amd64.iso montagem<br>rsync --exclude=/live/filessystem.squashfs -a montagem/ customizado
               <br>sudo mount -t squashfs -o loop montagem/live/filesystem.squashfs squashfs<br>sudo cp -a squashfs/* customizando/</p>
                </div>              
             </div>
@@ -214,15 +214,16 @@ extras, que as vezes é incompatível dependendo da distribuição.
             <h5>Este módulo deve está sempre carregado sempre que estiver customizando</h5>
             <p class="font-italic">
              Depois que já estiver customizando não é nescessário passar toda vez por esta etapa, só se for a primeira vez, a não ser que você chegou ao final da customização e removeu todas as pastas, daí você terá que refazer este passo novamente, você pode customizar o tempo for nescessário até concluír seu objetivo.</p>
+            <p><div><strong>Configuração para execução de programas no modo chroot</strong></div>sudo mount -t none -o bind /tmp /home/valdemir/LinuxOS/customizando/tmp</p>
             <p><div><strong>Arquivos de configuração de ambiente para uso do chroot</strong></div>sudo cp /etc/resolv.conf customizando/etc/
               <br>sudo cp /etc/hosts customizando/etc/<br>sudo mount --bind /dev/ customizando/dev<br>sudo chroot customizando
               <p><div><strong>Adicionando repositório</strong></div>sudo dde-file-manager /etc/apt/sources.list</p>
               <p><div><strong>Atualizando o sistema</strong><br>apt update && apt full-upgrade</p>
-              <p><strong>Abra uma nova aba no terminal</strong><br>sudo dde-file-manager<br># cd home<br>dpkg -i *.deb<br>apt -f install</p>
+              <p><strong>Abra uma nova aba no terminal</strong><br>sudo dde-file-manager<br>/home/valdemir/LinuxOS/customizando/home<br>dpkg -i *.deb<br>apt -f install</p>
               <div class="row">            
               <div class="col-lg-6">
                 <ul>
-                  <li><strong>Obs<i class="icofont-rounded-right"></i></strong> Modo instalação local</li>
+                  <li><strong>Observação<i class="icofont-rounded-right"></i></strong> Método instalação local</li>
                 </ul>
               </div>
               <div class="col-lg-6">
@@ -275,16 +276,16 @@ extras, que as vezes é incompatível dependendo da distribuição.
             <p class="font-italic">
               Para regenerar as declarações do sistema e comprimir filesystem.squashfs, siga os passos abaixo</p>
             <p><div><strong>Regenerando os arquivos</strong></div>chmod +w customizado/live/filesystem.manifest<br>sudo chroot customizando dpkg-query -f '${binary:Package} ${Version}\n' -W > customizado/live/filesystem.manifest<br>
-              sudo cp customizado/live/filesystem.manifest deepin/live/filesystem.manifest<br>sudo rm customizado/live/filesystem.squashfs<br>
-              sudo mksquashfs customizando customizado/live/filesystem.squashfs</p>
+              sudo cp customizado/live/filesystem.manifest customizado/live/filesystem.manifest<br>sudo rm customizado/live/filesystem.squashfs<br>
+              mksquashfs customizando customizado/live/filesystem.squashfs</p>
               <p><div><strong>Definindo o nome da imagem ISO</strong></div>sudo deepin-editor customizado/README.diskdefines</p>
-              <p><div><strong>Gerando a imagem ISO</strong></div>genisoimage -D -r -V “Linux-OS” -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o Deepin-20.2.2-desktop-community-x86_64.iso customizado/</p>
-              <p><div><strong>Criar o MD5 da ISO</strong></div>md5sum Deepin-20.2.2-desktop-community-x86_64.iso > Deepin-20.2.2-desktop-community-x86_64.iso,md5</p>
+              <p><div><strong>Gerando a imagem ISO</strong></div>genisoimage -D -r -V “Linux-OS” -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o deepin-20.2.2-desktop-community-x86_64.iso customizado/</p>
+              <p><div><strong>Criar o MD5 da ISO</strong></div>md5sum deepin-20.2.2-desktop-community-x86_64.iso > deepin-20.2.2-desktop-community-x86_64.iso,md5</p>
               <p><div><strong>Excluir o Diretório e subdiretório não vazio</strong></div><em>Para excluir o diretório e os subdiretórios que não estejam vazios, é necessário desmontar o ponto de montagem, use a opção -r (recursiva). Para ser claro, isso remove os diretórios e todos os arquivos e subdiretórios contidos neles</em>:
                   <div class="row">            
                     <div class="col-lg-6">
                       <ul>
-                        <li><strong>Diretório de customização<i class="icofont-rounded-right"></i></strong><br> sudo rm -r Deepin20</li>
+                        <li><strong>Diretório de customização<i class="icofont-rounded-right"></i></strong><br> sudo rm -r LinuxOS</li>
                       </ul>
                   </div>
             </div>                       
@@ -298,7 +299,7 @@ extras, que as vezes é incompatível dependendo da distribuição.
   <!-- ======= Footer ======= -->
   <footer id="footer">
     <div class="container">
-      <h3>Linux OS</h3>
+      <h3>LinuxOS</h3>
       <h5 class="font-italic">
       <div>Material de apoio para criação da imagem ISO customizada do seu Linux</div>
       </h5>
@@ -307,7 +308,7 @@ extras, que as vezes é incompatível dependendo da distribuição.
         <a href="https://twitter.com/jvmelo26?s=09" class="twitter"><i class="bx bxl-twitter"></i></a>
       </div>
       <div class="copyright">
-        &copy; Copyright <strong><span>LinuxOS</span></strong>. All Rights Reserved
+        &copy; Copyright <strong><span>LinuxOS 2019 - 2021</span></strong>. All Rights Reserved
       </div>
       <div class="credits">
       Sobre mim <a href="https://twitter.com/jvmelo26?s=09">José Valdemir de Melo</a>
